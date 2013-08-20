@@ -1,4 +1,4 @@
-# Flot [![Build status](https://travis-ci.org/mgaert/flot.png)](https://travis-ci.org/mgaert/flot)
+# Flot [![Build status](https://travis-ci.org/mgaert/flot.png?branch=master)](https://travis-ci.org/mgaert/flot)
 
 ## About ##
 
