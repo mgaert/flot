@@ -108,8 +108,8 @@ browser, but needs to redraw with canvas text when exporting as an image.
 
     // Creates (if necessary) and returns a text info object.
     /*
-     * When the canvas option is set, the object looks like this: 
-     * { 
+     * When the canvas option is set, the object looks like this:
+     * {
      *   width: Width of the text's bounding box.
      *   height: Height of the text's bounding box.
      *   positions: Array of positions at which this text is drawn.
@@ -123,7 +123,7 @@ browser, but needs to redraw with canvas text when exporting as an image.
      *     color: Color of the text.
      *   }
      * }
-     * The positions array contains objects that look like this: 
+     * The positions array contains objects that look like this:
      * {
      *   active: Flag indicating whether the text should be visible.
      *   lines: Array of [x, y] coordinates at which to draw the line.
