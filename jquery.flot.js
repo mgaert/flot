@@ -28,7 +28,7 @@ Licensed under the MIT license.
  * V. 1.1: Fix error handling so e.g. parsing an empty string does
  * produce a color rather than just crashing.
  */
-(function (B) {B.color = {};B.color.make = function (F, E, C, D) {var G = {};G.r = F || 0;G.g = E || 0;G.b = C || 0;G.a = D !== null ? D : 1;G.add = function (J, I) {for ( var H = 0; H < J.length; ++H) {G[J.charAt(H)] += I;}return G.normalize();};G.scale = function (J, I) {for ( var H = 0; H < J.length; ++H) {G[J.charAt(H)] *= I;}return G.normalize();};G.toString = function () {if (G.a >= 1) {return "rgb(" + [G.r, G.g, G.b].join(",") + ")";} else {return "rgba(" + [G.r, G.g, G.b, G.a].join(",") + ")";}};G.normalize = function () {function H (J, K, I) {return K < J ? J : (K > I ? I : K);}G.r = H(0, parseInt(G.r), 255);G.g = H(0, parseInt(G.g), 255);G.b = H(0, parseInt(G.b), 255);G.a = H(0, G.a, 1);return G;};G.clone = function () {return B.color.make(G.r, G.b, G.g, G.a);};return G.normalize();};B.color.extract = function (D, C) {var E;do {E = D.css(C).toLowerCase();if (E !== "" && E !== "transparent") {break;}D = D.parent();} while (!B.nodeName(D.get(0), "body"));if (E === "rgba(0, 0, 0, 0)") {E = "transparent";}return B.color.parse(E);};B.color.parse = function (F) {var E, C = B.color.make;if (E = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(F)) {return C(parseInt(E[1], 10), parseInt(E[2], 10), parseInt(E[3], 10));}if (E = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(F)) {return C(parseInt(E[1], 10), parseInt(E[2], 10), parseInt(E[3], 10), parseFloat(E[4]));}if (E = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(F)) {return C(parseFloat(E[1]) * 2.55, parseFloat(E[2]) * 2.55, parseFloat(E[3]) * 2.55);}if (E = /rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(F)) {return C(parseFloat(E[1]) * 2.55, parseFloat(E[2]) * 2.55, parseFloat(E[3]) * 2.55,parseFloat(E[4]));}if (E = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(F)) {return C(parseInt(E[1], 16), parseInt(E[2], 16), parseInt(E[3], 16));}if (E = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(F)) {return C(parseInt(E[1] + E[1], 16), parseInt(E[2] + E[2], 16), parseInt(E[3] + E[3], 16));}var D = B.trim(F).toLowerCase();if (D === "transparent") {return C(255, 255, 255, 0);} else {E = A[D] || [0, 0, 0];return C(E[0], E[1], E[2]);}};var A = {aqua : [0, 255, 255],azure : [240, 255, 255],beige : [245, 245, 220],black : [0, 0, 0],blue : [0, 0, 255],brown : [165, 42, 42],cyan : [0, 255, 255],darkblue : [0, 0, 139],darkcyan : [0, 139, 139],darkgrey : [169, 169, 169],darkgreen : [0, 100, 0],darkkhaki : [189, 183, 107],darkmagenta : [139, 0, 139],darkolivegreen : [85, 107, 47],darkorange : [255, 140, 0],darkorchid : [153, 50, 204],darkred : [139, 0, 0],darksalmon : [233, 150, 122],darkviolet : [148, 0, 211],fuchsia : [255, 0, 255],gold : [255, 215, 0],green : [0, 128, 0],indigo : [75, 0, 130],khaki : [240, 230, 140],lightblue : [173, 216, 230],lightcyan : [224, 255, 255],lightgreen : [144, 238, 144],lightgrey : [211, 211, 211],lightpink : [255, 182, 193],lightyellow : [255, 255, 224],lime : [0, 255, 0],magenta : [255, 0, 255],maroon : [128, 0, 0],navy : [0, 0, 128],olive : [128, 128, 0],orange : [255, 165, 0],pink : [255, 192, 203],purple : [128, 0, 128],violet : [128, 0, 128],red : [255, 0, 0],silver : [192, 192, 192],white : [255, 255, 255],yellow : [255, 255, 0]};})(jQuery);
+(function(b){b.color={};b.color.make=function(f,e,c,d){var h={};h.r=f||0;h.g=e||0;h.b=c||0;h.a=d!==null?d:1;h.add=function(k,j){for(var g=0;g<k.length;++g){h[k.charAt(g)]+=j;}return h.normalize();};h.scale=function(k,j){for(var g=0;g<k.length;++g){h[k.charAt(g)]*=j;}return h.normalize();};h.toString=function(){if(h.a>=1){return"rgb("+[h.r,h.g,h.b].join(",")+")";}else{return"rgba("+[h.r,h.g,h.b,h.a].join(",")+")";}};h.normalize=function(){function g(j,k,i){return k<j?j:(k>i?i:k);}h.r=g(0,parseInt(h.r,10),255);h.g=g(0,parseInt(h.g,10),255);h.b=g(0,parseInt(h.b,10),255);h.a=g(0,h.a,1);return h;};h.clone=function(){return b.color.make(h.r,h.b,h.g,h.a);};return h.normalize();};b.color.extract=function(e,d){var f;do{f=e.css(d).toLowerCase();if(f!==""&&f!=="transparent"){break;}e=e.parent();}while(!b.nodeName(e.get(0),"body"));if(f==="rgba(0, 0, 0, 0)"){f="transparent";}return b.color.parse(f);};b.color.parse=function(f){var e,c=b.color.make;if((e=/rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(f))){return c(parseInt(e[1],10),parseInt(e[2],10),parseInt(e[3],10));}if((e=/rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(f))){return c(parseInt(e[1],10),parseInt(e[2],10),parseInt(e[3],10),parseFloat(e[4]));}if((e=/rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(f))){return c(parseFloat(e[1])*2.55,parseFloat(e[2])*2.55,parseFloat(e[3])*2.55);}if((e=/rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(f))){return c(parseFloat(e[1])*2.55,parseFloat(e[2])*2.55,parseFloat(e[3])*2.55,parseFloat(e[4]));}if((e=/#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(f))){return c(parseInt(e[1],16),parseInt(e[2],16),parseInt(e[3],16));}if((e=/#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(f))){return c(parseInt(e[1]+e[1],16),parseInt(e[2]+e[2],16),parseInt(e[3]+e[3],16));}var d=b.trim(f).toLowerCase();if(d==="transparent"){return c(255,255,255,0);}else{e=a[d]||[0,0,0];return c(e[0],e[1],e[2]);}};var a={aqua:[0,255,255],azure:[240,255,255],beige:[245,245,220],black:[0,0,0],blue:[0,0,255],brown:[165,42,42],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgrey:[169,169,169],darkgreen:[0,100,0],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkviolet:[148,0,211],fuchsia:[255,0,255],gold:[255,215,0],green:[0,128,0],indigo:[75,0,130],khaki:[240,230,140],lightblue:[173,216,230],lightcyan:[224,255,255],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightyellow:[255,255,224],lime:[0,255,0],magenta:[255,0,255],maroon:[128,0,0],navy:[0,0,128],olive:[128,128,0],orange:[255,165,0],pink:[255,192,203],purple:[128,0,128],violet:[128,0,128],red:[255,0,0],silver:[192,192,192],white:[255,255,255],yellow:[255,255,0]};})(jQuery);
 
 // the actual Flot code
 (function ($) {
@@ -183,7 +183,7 @@ Licensed under the MIT license.
 
                 var positions = styleCache[key].positions;
 
-                for ( var i = 0, position; position = positions[i]; i++) {
+                for ( var i = 0, position; (position = positions[i]); i++) {
                   if (position.active) {
                     if (!position.rendered) {
                       layer.append(position.element);
@@ -395,7 +395,7 @@ Licensed under the MIT license.
     // Determine whether this text already exists at this position.
     // If so, mark it for inclusion in the next render pass.
 
-    for ( var i = 0, position; position = positions[i]; i++) {
+    for ( var i = 0, position; (position = positions[i]); i++) {
       if (position.x === x && position.y === y) {
         position.active = true;
         return;
@@ -448,6 +448,7 @@ Licensed under the MIT license.
   //     Angle is currently unused, it will be implemented in the future.
 
   Canvas.prototype.removeText = function (layer, x, y, text, font, angle) {
+    var positions;
     if (text === null) {
       var layerCache = this._textCache[layer];
       if (layerCache !== null) {
@@ -456,8 +457,8 @@ Licensed under the MIT license.
             var styleCache = layerCache[styleKey];
             for ( var key in styleCache) {
               if (hasOwnProperty.call(styleCache, key)) {
-                var positions = styleCache[key].positions;
-                for ( var i = 0, position; position = positions[i]; i++) {
+                positions = styleCache[key].positions;
+                for ( var i = 0, position; (position = positions[i]); i++) {
                   position.active = false;
                 }
               }
@@ -466,10 +467,10 @@ Licensed under the MIT license.
         }
       }
     } else {
-      var positions = this.getTextInfo(layer, text, font, angle).positions;
-      for ( var i = 0, position; position = positions[i]; i++) {
-        if (position.x === x && position.y === y) {
-          position.active = false;
+      positions = this.getTextInfo(layer, text, font, angle).positions;
+      for ( var j = 0, pos; (pos = positions[j]); j++) {
+        if (pos.x === x && pos.y === y) {
+          pos.active = false;
         }
       }
     }
@@ -1575,21 +1576,25 @@ Licensed under the MIT license.
       var i, axes = allAxes(), showGrid = options.grid.show;
 
       // Initialize the plot's offset from the edge of the canvas
-
-      for ( var a in plotOffset) {
-        var margin = options.grid.margin || 0;
-        plotOffset[a] = typeof margin === "number" ? margin : margin[a] || 0;
+      var a = null;
+      for (a in plotOffset) {
+        if (plotOffset.hasOwnProperty(a)){
+          var margin = options.grid.margin || 0;
+          plotOffset[a] = typeof margin === "number" ? margin : margin[a] || 0;
+        }
       }
 
       executeHooks(hooks.processOffset, [plotOffset]);
 
       // If the grid is visible, add its border width to the offset
-
-      for ( var a in plotOffset) {
-        if (typeof (options.grid.borderWidth) === "object") {
-          plotOffset[a] += showGrid ? options.grid.borderWidth[a] : 0;
-        } else {
-          plotOffset[a] += showGrid ? options.grid.borderWidth : 0;
+      a = null;
+      for ( a in plotOffset) {
+        if (plotOffset.hasOwnProperty(a)){
+          if (typeof (options.grid.borderWidth) === "object") {
+            plotOffset[a] += showGrid ? options.grid.borderWidth[a] : 0;
+          } else {
+            plotOffset[a] += showGrid ? options.grid.borderWidth : 0;
+          }
         }
       }
 
@@ -2976,7 +2981,7 @@ Licensed under the MIT license.
     function onMouseMove (e) {
       if (options.grid.hoverable) {
         triggerClickHoverEvent("plothover", e, function (s) {
-          return s["hoverable"] !== false;
+          return s.hoverable !== false;
         });
       }
     }
@@ -2991,15 +2996,14 @@ Licensed under the MIT license.
 
     function onClick (e) {
       triggerClickHoverEvent("plotclick", e, function (s) {
-        return s["clickable"] !== false;
+        return s.clickable !== false;
       });
     }
 
     // trigger click or hover event (they send the same parameters
     // so we share their code)
     function triggerClickHoverEvent (eventname, event, seriesFilter) {
-      var offset = eventHolder.offset(), canvasX = event.pageX - offset.left - plotOffset.left, canvasY = event.pageY
-          - offset.top - plotOffset.top, pos = canvasToAxisCoords({
+      var offset = eventHolder.offset(), canvasX = event.pageX - offset.left - plotOffset.left, canvasY = event.pageY - offset.top - plotOffset.top, pos = canvasToAxisCoords({
         left : canvasX,
         top : canvasY
       });
@@ -3011,18 +3015,15 @@ Licensed under the MIT license.
 
       if (item) {
         // fill in mouse pos for any listeners out there
-        item.pageX = parseInt(item.series.xaxis.p2c(item.datapoint[0]) + offset.left
-            + plotOffset.left, 10);
-        item.pageY = parseInt(item.series.yaxis.p2c(item.datapoint[1]) + offset.top
-            + plotOffset.top, 10);
+        item.pageX = parseInt(item.series.xaxis.p2c(item.datapoint[0]) + offset.left + plotOffset.left, 10);
+        item.pageY = parseInt(item.series.yaxis.p2c(item.datapoint[1]) + offset.top + plotOffset.top, 10);
       }
 
       if (options.grid.autoHighlight) {
         // clear auto-highlights
         for ( var i = 0; i < highlights.length; ++i) {
           var h = highlights[i];
-          if (h.auto === eventname
-              && !(item && h.series === item.series && h.point[0] === item.datapoint[0] && h.point[1] === item.datapoint[1])) {
+          if (h.auto === eventname && !(item && h.series === item.series && h.point[0] === item.datapoint[0] && h.point[1] === item.datapoint[1])) {
             unhighlight(h.series, h.point);
           }
         }
