@@ -8,5 +8,5 @@ all: $(patsubst %.js,%.min.js,$(filter-out %.min.js,$(wildcard *.js)))
 %.min.js: %.js
 	yuicompressor --preserve-semi $< -o ./bin/$@
 
-test:
-	./node_modules/.bin/jshint *jquery.flot.js
+test: jquery.flot*.js
+	./node_modules/.bin/jshint $<
