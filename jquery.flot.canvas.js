@@ -25,317 +25,303 @@ The "canvas" option controls whether full canvas drawing is enabled, making it
 possible to toggle on and off. This is useful when a plot uses HTML text in the
 browser, but needs to redraw with canvas text when exporting as an image.
 
-*/
+ */
 
 (function($) {
 
-	var options = {
-		canvas: true
-	};
-
-	var render, getTextInfo, addText;
-
-	function init(plot, classes) {
-
-		var Canvas = classes.Canvas;
-
-		// We only want to replace the functions once; the second time around
-		// we would just get our new function back.  This whole replacing of
-		// prototype functions is a disaster, and needs to be changed ASAP.
-
-		if (render == null) {
-			getTextInfo = Canvas.prototype.getTextInfo,
-			addText = Canvas.prototype.addText,
-			render = Canvas.prototype.render;
-		}
-
-		// Finishes rendering the canvas, including overlaid text
-
-		Canvas.prototype.render = function() {
-
-			if (!plot.getOptions().canvas) {
-				return render.call(this);
-			}
-
-			var context = this.context,
-				cache = this._textCache;
-
-			// For each text layer, render elements marked as active
-
-			context.save();
-			context.textBaseline = "middle";
-
-			for (var layerKey in cache) {
-				if (Object.prototype.hasOwnProperty.call(cache, layerKey)) {
-					var layerCache = cache[layerKey];
-					for (var styleKey in layerCache) {
-						if (Object.prototype.hasOwnProperty.call(layerCache, styleKey)) {
-							var styleCache = layerCache[styleKey],
-								updateStyles = true;
-							for (var key in styleCache) {
-								if (Object.prototype.hasOwnProperty.call(styleCache, key)) {
-
-									var info = styleCache[key],
-										positions = info.positions,
-										lines = info.lines;
-
-									// Since every element at this level of the cache have the
-									// same font and fill styles, we can just change them once
-									// using the values from the first element.
-
-									if (updateStyles) {
-										context.fillStyle = info.font.color;
-										context.font = info.font.definition;
-										updateStyles = false;
-									}
-
-									for (var i = 0, position; position = positions[i]; i++) {
-										if (position.active) {
-											for (var j = 0, line; line = position.lines[j]; j++) {
-												context.fillText(lines[j].text, line[0], line[1]);
-											}
-										} else {
-											positions.splice(i--, 1);
-										}
-									}
-
-									if (positions.length === 0) {
-										delete styleCache[key];
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-			context.restore();
-		};
-
-		// Creates (if necessary) and returns a text info object.
-		//
-		// When the canvas option is set, the object looks like this:
-		//
-		// {
-		//     width: Width of the text's bounding box.
-		//     height: Height of the text's bounding box.
-		//     positions: Array of positions at which this text is drawn.
-		//     lines: [{
-		//         height: Height of this line.
-		//         widths: Width of this line.
-		//         text: Text on this line.
-		//     }],
-		//     font: {
-		//         definition: Canvas font property string.
-		//         color: Color of the text.
-		//     },
-		// }
-		//
-		// The positions array contains objects that look like this:
-		//
-		// {
-		//     active: Flag indicating whether the text should be visible.
-		//     lines: Array of [x, y] coordinates at which to draw the line.
-		//     x: X coordinate at which to draw the text.
-		//     y: Y coordinate at which to draw the text.
-		// }
+  var options = {
+    canvas : true
+  };
+
+  var render, getTextInfo, addText;
+
+  function init(plot, classes) {
+
+    var Canvas = classes.Canvas;
+
+    // We only want to replace the functions once; the second time around
+    // we would just get our new function back. This whole replacing of
+    // prototype functions is a disaster, and needs to be changed ASAP.
+
+    if (render == null) {
+      getTextInfo = Canvas.prototype.getTextInfo, addText = Canvas.prototype.addText, render = Canvas.prototype.render;
+    }
+
+    // Finishes rendering the canvas, including overlaid text
+
+    Canvas.prototype.render = function() {
+
+      if (!plot.getOptions().canvas) {
+        return render.call(this);
+      }
+
+      var context = this.context, cache = this._textCache;
+
+      // For each text layer, render elements marked as active
+
+      context.save();
+      context.textBaseline = "middle";
+
+      for ( var layerKey in cache) {
+        if (Object.prototype.hasOwnProperty.call(cache, layerKey)) {
+          var layerCache = cache[layerKey];
+          for ( var styleKey in layerCache) {
+            if (Object.prototype.hasOwnProperty.call(layerCache, styleKey)) {
+              var styleCache = layerCache[styleKey], updateStyles = true;
+              for ( var key in styleCache) {
+                if (Object.prototype.hasOwnProperty.call(styleCache, key)) {
+
+                  var info = styleCache[key], positions = info.positions, lines = info.lines;
+
+                  // Since every element at this level of the cache have the
+                  // same font and fill styles, we can just change them once
+                  // using the values from the first element.
+
+                  if (updateStyles) {
+                    context.fillStyle = info.font.color;
+                    context.font = info.font.definition;
+                    updateStyles = false;
+                  }
+
+                  for ( var i = 0, position; position = positions[i]; i++) {
+                    if (position.active) {
+                      for ( var j = 0, line; line = position.lines[j]; j++) {
+                        context.fillText(lines[j].text, line[0], line[1]);
+                      }
+                    } else {
+                      positions.splice(i--, 1);
+                    }
+                  }
+
+                  if (positions.length === 0) {
+                    delete styleCache[key];
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      context.restore();
+    };
 
-		Canvas.prototype.getTextInfo = function(layer, text, font, angle, width) {
+    // Creates (if necessary) and returns a text info object.
+    /*
+     * When the canvas option is set, the object looks like this: 
+     * { 
+     *   width: Width of the text's bounding box.
+     *   height: Height of the text's bounding box.
+     *   positions: Array of positions at which this text is drawn.
+     *   lines: [{
+     *     height: Height of this line.
+     *     widths: Width of this line.
+     *     text: Text on this line.
+     *   }],
+     *   font: {
+     *     definition: Canvas font property string.
+     *     color: Color of the text.
+     *   }
+     * }
+     * The positions array contains objects that look like this: 
+     * {
+     *   active: Flag indicating whether the text should be visible.
+     *   lines: Array of [x, y] coordinates at which to draw the line.
+     *   x: X coordinate at which to draw the text.
+     *   y: Y coordinate at which to draw the text.
+     * }
+     */
 
-			if (!plot.getOptions().canvas) {
-				return getTextInfo.call(this, layer, text, font, angle, width);
-			}
+    Canvas.prototype.getTextInfo = function(layer, text, font, angle, width) {
 
-			var textStyle, layerCache, styleCache, info;
+      if (!plot.getOptions().canvas) {
+        return getTextInfo.call(this, layer, text, font, angle, width);
+      }
 
-			// Cast the value to a string, in case we were given a number
+      var textStyle, layerCache, styleCache, info;
 
-			text = "" + text;
+      // Cast the value to a string, in case we were given a number
 
-			// If the font is a font-spec object, generate a CSS definition
+      text = "" + text;
 
-			if (typeof font === "object") {
-				textStyle = font.style + " " + font.variant + " " + font.weight + " " + font.size + "px " + font.family;
-			} else {
-				textStyle = font;
-			}
+      // If the font is a font-spec object, generate a CSS definition
 
-			// Retrieve (or create) the cache for the text's layer and styles
+      if (typeof font === "object") {
+        textStyle = font.style + " " + font.variant + " " + font.weight + " " + font.size + "px " + font.family;
+      } else {
+        textStyle = font;
+      }
 
-			layerCache = this._textCache[layer];
+      // Retrieve (or create) the cache for the text's layer and styles
 
-			if (layerCache == null) {
-				layerCache = this._textCache[layer] = {};
-			}
+      layerCache = this._textCache[layer];
 
-			styleCache = layerCache[textStyle];
+      if (layerCache == null) {
+        layerCache = this._textCache[layer] = {};
+      }
 
-			if (styleCache == null) {
-				styleCache = layerCache[textStyle] = {};
-			}
+      styleCache = layerCache[textStyle];
 
-			info = styleCache[text];
+      if (styleCache == null) {
+        styleCache = layerCache[textStyle] = {};
+      }
 
-			if (info == null) {
+      info = styleCache[text];
 
-				var context = this.context;
+      if (info == null) {
 
-				// If the font was provided as CSS, create a div with those
-				// classes and examine it to generate a canvas font spec.
+        var context = this.context;
 
-				if (typeof font !== "object") {
+        // If the font was provided as CSS, create a div with those
+        // classes and examine it to generate a canvas font spec.
 
-					var element = $("<div>&nbsp;</div>")
-						.css("position", "absolute")
-						.addClass(typeof font === "string" ? font : null)
-						.appendTo(this.getTextLayer(layer));
+        if (typeof font !== "object") {
 
-					font = {
-						lineHeight: element.height(),
-						style: element.css("font-style"),
-						variant: element.css("font-variant"),
-						weight: element.css("font-weight"),
-						family: element.css("font-family"),
-						color: element.css("color")
-					};
+          var element = $("<div>&nbsp;</div>").css("position", "absolute").addClass(typeof font === "string" ? font : null).appendTo(this.getTextLayer(layer));
 
-					// Setting line-height to 1, without units, sets it equal
-					// to the font-size, even if the font-size is abstract,
-					// like 'smaller'.  This enables us to read the real size
-					// via the element's height, working around browsers that
-					// return the literal 'smaller' value.
+          font = {
+            lineHeight : element.height(),
+            style : element.css("font-style"),
+            variant : element.css("font-variant"),
+            weight : element.css("font-weight"),
+            family : element.css("font-family"),
+            color : element.css("color")
+          };
 
-					font.size = element.css("line-height", 1).height();
+          // Setting line-height to 1, without units, sets it equal
+          // to the font-size, even if the font-size is abstract,
+          // like 'smaller'. This enables us to read the real size
+          // via the element's height, working around browsers that
+          // return the literal 'smaller' value.
 
-					element.remove();
-				}
+          font.size = element.css("line-height", 1).height();
 
-				textStyle = font.style + " " + font.variant + " " + font.weight + " " + font.size + "px " + font.family;
+          element.remove();
+        }
 
-				// Create a new info object, initializing the dimensions to
-				// zero so we can count them up line-by-line.
+        textStyle = font.style + " " + font.variant + " " + font.weight + " " + font.size + "px " + font.family;
 
-				info = styleCache[text] = {
-					width: 0,
-					height: 0,
-					positions: [],
-					lines: [],
-					font: {
-						definition: textStyle,
-						color: font.color
-					}
-				};
+        // Create a new info object, initializing the dimensions to
+        // zero so we can count them up line-by-line.
 
-				context.save();
-				context.font = textStyle;
+        info = styleCache[text] = {
+          width : 0,
+          height : 0,
+          positions : [],
+          lines : [],
+          font : {
+            definition : textStyle,
+            color : font.color
+          }
+        };
 
-				// Canvas can't handle multi-line strings; break on various
-				// newlines, including HTML brs, to build a list of lines.
-				// Note that we could split directly on regexps, but IE < 9 is
-				// broken; revisit when we drop IE 7/8 support.
+        context.save();
+        context.font = textStyle;
 
-				var lines = (text + "").replace(/<br ?\/?>|\r\n|\r/g, "\n").split("\n");
+        // Canvas can't handle multi-line strings; break on various
+        // newlines, including HTML brs, to build a list of lines.
+        // Note that we could split directly on regexps, but IE < 9 is
+        // broken; revisit when we drop IE 7/8 support.
 
-				for (var i = 0; i < lines.length; ++i) {
+        var lines = (text + "").replace(/<br ?\/?>|\r\n|\r/g, "\n").split("\n");
 
-					var lineText = lines[i],
-						measured = context.measureText(lineText);
+        for ( var i = 0; i < lines.length; ++i) {
 
-					info.width = Math.max(measured.width, info.width);
-					info.height += font.lineHeight;
+          var lineText = lines[i], measured = context.measureText(lineText);
 
-					info.lines.push({
-						text: lineText,
-						width: measured.width,
-						height: font.lineHeight
-					});
-				}
+          info.width = Math.max(measured.width, info.width);
+          info.height += font.lineHeight;
 
-				context.restore();
-			}
+          info.lines.push({
+            text : lineText,
+            width : measured.width,
+            height : font.lineHeight
+          });
+        }
 
-			return info;
-		};
+        context.restore();
+      }
 
-		// Adds a text string to the canvas text overlay.
+      return info;
+    };
 
-		Canvas.prototype.addText = function(layer, x, y, text, font, angle, width, halign, valign) {
+    // Adds a text string to the canvas text overlay.
 
-			if (!plot.getOptions().canvas) {
-				return addText.call(this, layer, x, y, text, font, angle, width, halign, valign);
-			}
+    Canvas.prototype.addText = function(layer, x, y, text, font, angle, width, halign, valign) {
 
-			var info = this.getTextInfo(layer, text, font, angle, width),
-				positions = info.positions,
-				lines = info.lines;
+      if (!plot.getOptions().canvas) {
+        return addText.call(this, layer, x, y, text, font, angle, width, halign, valign);
+      }
 
-			// Text is drawn with baseline 'middle', which we need to account
-			// for by adding half a line's height to the y position.
+      var info = this.getTextInfo(layer, text, font, angle, width), positions = info.positions, lines = info.lines;
 
-			y += info.height / lines.length / 2;
+      // Text is drawn with baseline 'middle', which we need to account
+      // for by adding half a line's height to the y position.
 
-			// Tweak the initial y-position to match vertical alignment
+      y += info.height / lines.length / 2;
 
-			if (valign === "middle") {
-				y = Math.round(y - info.height / 2);
-			} else if (valign === "bottom") {
-				y = Math.round(y - info.height);
-			} else {
-				y = Math.round(y);
-			}
+      // Tweak the initial y-position to match vertical alignment
 
-			// FIXME: LEGACY BROWSER FIX
-			// AFFECTS: Opera < 12.00
+      if (valign === "middle") {
+        y = Math.round(y - info.height / 2);
+      } else if (valign === "bottom") {
+        y = Math.round(y - info.height);
+      } else {
+        y = Math.round(y);
+      }
 
-			// Offset the y coordinate, since Opera is off pretty
-			// consistently compared to the other browsers.
+      // FIXME: LEGACY BROWSER FIX
+      // AFFECTS: Opera < 12.00
 
-			if (!!(window.opera && window.opera.version().split(".")[0] < 12)) {
-				y -= 2;
-			}
+      // Offset the y coordinate, since Opera is off pretty
+      // consistently compared to the other browsers.
 
-			// Determine whether this text already exists at this position.
-			// If so, mark it for inclusion in the next render pass.
+      if (!!(window.opera && window.opera.version().split(".")[0] < 12)) {
+        y -= 2;
+      }
 
-			for (var i = 0, position; position = positions[i]; i++) {
-				if (position.x === x && position.y === y) {
-					position.active = true;
-					return;
-				}
-			}
+      // Determine whether this text already exists at this position.
+      // If so, mark it for inclusion in the next render pass.
 
-			// If the text doesn't exist at this position, create a new entry
+      for ( var i = 0, position; position = positions[i]; i++) {
+        if (position.x === x && position.y === y) {
+          position.active = true;
+          return;
+        }
+      }
 
-			position = {
-				active: true,
-				lines: [],
-				x: x,
-				y: y
-			};
+      // If the text doesn't exist at this position, create a new entry
 
-			positions.push(position);
+      position = {
+        active : true,
+        lines : [],
+        x : x,
+        y : y
+      };
 
-			// Fill in the x & y positions of each line, adjusting them
-			// individually for horizontal alignment.
+      positions.push(position);
 
-			for (var j = 0, line; line = lines[j]; j++) {
-				if (halign === "center") {
-					position.lines.push([Math.round(x - line.width / 2), y]);
-				} else if (halign === "right") {
-					position.lines.push([Math.round(x - line.width), y]);
-				} else {
-					position.lines.push([Math.round(x), y]);
-				}
-				y += line.height;
-			}
-		};
-	}
+      // Fill in the x & y positions of each line, adjusting them
+      // individually for horizontal alignment.
 
-	$.plot.plugins.push({
-		init: init,
-		options: options,
-		name: "canvas",
-		version: "1.0"
-	});
+      for ( var j = 0, line; line = lines[j]; j++) {
+        if (halign === "center") {
+          position.lines.push([Math.round(x - line.width / 2), y]);
+        } else if (halign === "right") {
+          position.lines.push([Math.round(x - line.width), y]);
+        } else {
+          position.lines.push([Math.round(x), y]);
+        }
+        y += line.height;
+      }
+    };
+  }
+
+  $.plot.plugins.push({
+    init : init,
+    options : options,
+    name : "canvas",
+    version : "1.0"
+  });
 
 })(jQuery);
