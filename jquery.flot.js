@@ -705,7 +705,19 @@
       shutdown : []
     }, plot = this;
 
+    var highlights = [];
+    var redrawTimeout = null;
+
     // public functions
+    plot.setOptions = parseOptions;
+    plot.render = function (data, opt) {
+      shutdown();
+      parseOptions(opt);
+      setData(data);
+      setupGrid();
+      draw();
+      bindEvents();
+    };
     plot.setData = setData;
     plot.setupGrid = setupGrid;
     plot.draw = draw;
@@ -1576,7 +1588,6 @@
     //
     // This first phase only considers one dimension per axis; the other
     // dimension depends on the other axes, and will be calculated later.
-
     function allocateAxisBoxFirstPhase(axis) {
 
       var contentWidth = axis.tickWidth, contentHeight = axis.tickHeight, axisOptions = axis.options, tickLength = axisOptions.tickLength, axisPosition = axisOptions.position, axisMargin = options.grid.axisMargin, padding = options.grid.labelMargin, all = axis.direction === "x" ? xaxes : yaxes, innermost;
@@ -2060,7 +2071,7 @@
     }
 
     function extractRange(ranges, coord) {
-      var axis, from, to, key, axes = allAxes();
+      var axis = null, from = null, to = null, key = null, axes = allAxes();
 
       for ( var i = 0; i < axes.length; ++i) {
         axis = axes[i];
@@ -2078,10 +2089,12 @@
       }
 
       // backwards-compat stuff - to be removed in future
-      if (!ranges[key]) {
-        axis = coord === "x" ? xaxes[0] : yaxes[0];
-        from = ranges[coord + "1"];
-        to = ranges[coord + "2"];
+      if (key !== null) {
+        if (!ranges[key]) {
+          axis = coord === "x" ? xaxes[0] : yaxes[0];
+          from = ranges[coord + "1"];
+          to = ranges[coord + "2"];
+        }
       }
 
       // auto-reverse as an added bonus
@@ -2862,8 +2875,6 @@
     }
 
     // interactive features
-
-    var highlights = [], redrawTimeout = null;
 
     // returns the data item the mouse is over, or null if none is found
     function findNearbyItem(mouseX, mouseY, seriesFilter) {
