@@ -15,8 +15,8 @@ all: $(JS_MINIFIED)
 
 # Flot's Travis test suite runs JSHint with the options in .jshintrc
 
-test:
-	./node_modules/.bin/jshint jquery.flot*.js
+test: jquery.flot*.js
+	./node_modules/.bin/jshint $<
 
 .PHONY: clean
 
