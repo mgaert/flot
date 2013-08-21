@@ -48,7 +48,9 @@ browser, but needs to redraw with canvas text when exporting as an image.
     // prototype functions is a disaster, and needs to be changed ASAP.
 
     if (render === null) {
-      getTextInfo = Canvas.prototype.getTextInfo, addText = Canvas.prototype.addText, render = Canvas.prototype.render;
+      getTextInfo = Canvas.prototype.getTextInfo;
+      addText = Canvas.prototype.addText;
+      render = Canvas.prototype.render;
     }
 
     // Finishes rendering the canvas, including overlaid text
