@@ -6,6 +6,7 @@
 		"test": "make test"
 	},
 	"devDependencies": {
-		"jshint": "2.1.10"
+		"jshint": "2.1.10",
+		"yuicompressor" : "2.4.8"
 	}
 }
