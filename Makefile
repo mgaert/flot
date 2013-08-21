@@ -1,12 +1,29 @@
-# Makefile for generating minified files
+# Flot Makefile
+
+BUILD_PATH = ./bin
+SRC_PATH = $(filter-out *.min.js,$(wildcard *.js))
+SRC = $(wildcard jquery.flot*.js)
 
 .PHONY: all
 
-# we cheat and process all .js files instead of an exhaustive list
-all: $(patsubst %.js,%.min.js,$(filter-out %.min.js,$(wildcard *.js)))
+# The default behavior is to minify all our JavaScript files
+JS_MINIFIED = $(SRC_PATH:.js=.min.js)
+
+all: $(JS_MINIFIED)
 
 %.min.js: %.js
-	yuicompressor --preserve-semi $< -o ./bin/$@
+	yuicompressor $< -o $(BUILD_PATH)/$@
 
-test: jquery.flot*.js
+# Flot's Travis test suite runs JSHint with the options in .jshintrc
+
+.PHONY: test
+JS_HINT = $(SRC:.js=.hint.js)
+test: $(JS_HINT)
+
+%.hint.js: %.js
 	./node_modules/.bin/jshint $<
+
+.PHONY: clean
+
+clean:
+	rm -f $(BUILD_PATH)
