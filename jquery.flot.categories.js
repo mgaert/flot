@@ -58,8 +58,8 @@ as "categories" on the axis object, e.g. plot.getAxes().xaxis.categories.
         // auto-transformation to numbers so the strings are intact
         // for later processing
 
-        var xCategories = series.xaxis.options.mode == "categories",
-            yCategories = series.yaxis.options.mode == "categories";
+        var xCategories = series.xaxis.options.mode === "categories",
+            yCategories = series.yaxis.options.mode === "categories";
         
         if (!(xCategories || yCategories))
             return;
@@ -118,7 +118,7 @@ as "categories" on the axis object, e.g. plot.getAxes().xaxis.categories.
     }
     
     function setupCategoriesForAxis(series, axis, datapoints) {
-        if (series[axis].options.mode != "categories")
+        if (series[axis].options.mode !== "categories")
             return;
         
         if (!series[axis].categories) {
@@ -152,13 +152,13 @@ as "categories" on the axis object, e.g. plot.getAxes().xaxis.categories.
             index = getNextIndex(categories);
 
         for (var i = 0; i < points.length; i += ps) {
-            if (points[i] == null)
+            if (points[i] === null)
                 continue;
             
             for (var m = 0; m < ps; ++m) {
                 var val = points[i + m];
 
-                if (val == null || !format[m][formatColumn])
+                if (val === null || !format[m][formatColumn])
                     continue;
 
                 if (!(val in categories)) {

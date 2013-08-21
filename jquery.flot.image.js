@@ -78,7 +78,7 @@ Google Maps).
                 s = s.data;
 
             $.each(s, function (i, p) {
-                if (typeof p[0] == "string") {
+                if (typeof p[0] === "string") {
                     urls.push(p[0]);
                     points.push(p);
                 }
@@ -94,11 +94,11 @@ Google Maps).
 
             callback();
         });
-    }
+    };
     
     $.plot.image.load = function (urls, callback) {
         var missing = urls.length, loaded = {};
-        if (missing == 0)
+        if (missing === 0)
             callback({});
 
         $.each(urls, function (i, url) {
@@ -107,7 +107,7 @@ Google Maps).
                 
                 loaded[url] = this;
                 
-                if (missing == 0)
+                if (missing === 0)
                     callback(loaded);
             };
 
@@ -150,7 +150,7 @@ Google Maps).
             
             // if the anchor is at the center of the pixel, expand the 
             // image by 1/2 pixel in each direction
-            if (series.images.anchor == "center") {
+            if (series.images.anchor === "center") {
                 tmp = 0.5 * (x2-x1) / (img.width - 1);
                 x1 -= tmp;
                 x2 += tmp;
@@ -160,7 +160,7 @@ Google Maps).
             }
             
             // clip
-            if (x1 == x2 || y1 == y2 ||
+            if (x1 === x2 || y1 === y2 ||
                 x1 >= xaxis.max || x2 <= xaxis.min ||
                 y1 >= yaxis.max || y2 <= yaxis.min)
                 continue;
