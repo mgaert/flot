@@ -276,9 +276,9 @@ can set the default in the options.
             $.each(plot.getAxes(), function (_, axis) {
 
                 var opts = axis.options,
-                    min = axis.c2p(axis.p2c(axis.min) + d),
+                    d = delta[axis.direction];
+                var min = axis.c2p(axis.p2c(axis.min) + d),
                     max = axis.c2p(axis.p2c(axis.max) + d),
-                    d = delta[axis.direction],
                     pr = opts.panRange;
 
                 if (pr === false) { // no panning on this axis
